@@ -19,11 +19,14 @@
 			next: '.forward',
 			prev: '.backward',
 			disabledClass: 'disabled',
+			noUrlClass: 'noUrl',
 			autoplay: false,
 			autopause: true,
 			interval: 3000, 
 			clickable: true,
-			api: false
+			api: false,
+			nextUrl: null,
+			prevUrl: null
 		}
 	};  
 	
@@ -43,11 +46,19 @@
 		}	
 		
 		var nextButton = find(conf.next).click(function() {
+			if ($(this).hasClass(conf.disabledClass) && conf.nextUrl != null) {
+				window.location = conf.nextUrl;
+				return;
+			} 
 			tabs.next();		
 		});
 		
 		var prevButton = find(conf.prev).click(function() {
-			tabs.prev();		
+			if ($(this).hasClass(conf.disabledClass) && conf.prevUrl != null) {
+				window.location = conf.prevUrl;
+				return;
+			} 
+			tabs.prev();
 		}); 
 
 
@@ -170,6 +181,9 @@
 			el = new Slideshow($(this), conf);
 			$(this).data("slideshow", el); 			
 		});	
+		
+		if (conf.prevUrl == null) $(conf.prev).addClass(conf.noUrlClass);
+		if (conf.nextUrl == null) $(conf.next).addClass(conf.noUrlClass);
 		
 		return conf.api ? el : this;
 	};
